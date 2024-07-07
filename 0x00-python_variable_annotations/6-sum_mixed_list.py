@@ -19,4 +19,4 @@ def sum_mixed_list(mxd_lst: Union[int, float]) -> Union[int, float]:
         >>> sum_mixed_list([1, 2, 3.5, 4.2])
         10.7
     """
-    return sum(mxd_lst)
+    return float(sum(mxd_lst))
