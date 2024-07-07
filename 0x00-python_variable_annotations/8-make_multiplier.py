@@ -2,7 +2,8 @@
 """
 This module provides a function for creating multiplier functions.
 
-The make_multiplier function returns a function that multiplies a given number by the specified multiplier.
+The make_multiplier function returns a function that multiplies a given number
+by the specified multiplier.
 
 Example:
     >>> multiply_by_2 = make_multiplier(2)
@@ -14,13 +15,15 @@ from typing import Callable
 
 def make_multiplier(multiplier: float) -> Callable[[float], float]:
     """
-    Returns a function that multiplies a given number by the specified multiplier.
+    Returns a function that multiplies a given number by the
+    specified multiplier.
 
     Args:
         multiplier (float): The value to multiply the input number by.
 
     Returns:
-        Callable[[float], float]: A function that takes a float as input and returns the result of multiplying it by the multiplier.
+        Callable[[float], float]: A function that takes a float as input and
+        returns the result of multiplying it by the multiplier.
 
     Example:
         >>> multiply_by_2 = make_multiplier(2)
