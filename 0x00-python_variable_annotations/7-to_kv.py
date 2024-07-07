@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """ This module contains a function to_kv that takes a string and a number as
     input and returns a tuple containing the string and square of the number.
 """
