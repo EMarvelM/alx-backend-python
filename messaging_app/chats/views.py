@@ -27,6 +27,7 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         conversation = serializer.validated_data.get('conversation')
+        conversation_id = conversation.id if conversation else None
         if not conversation or self.request.user not in conversation.participants.all():
             from rest_framework import status
             from rest_framework.response import Response
