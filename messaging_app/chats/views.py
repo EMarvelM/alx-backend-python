@@ -24,3 +24,11 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Message.objects.filter(conversation__participants=self.request.user)
+
+    def perform_create(self, serializer):
+        conversation = serializer.validated_data.get('conversation')
+        if not conversation or self.request.user not in conversation.participants.all():
+            from rest_framework import status
+            from rest_framework.response import Response
+            raise Response({'error': 'You are not a participant in this conversation'}, status=status.HTTP_403_FORBIDDEN)
+        serializer.save(sender=self.request.user)
