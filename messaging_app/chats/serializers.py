@@ -4,9 +4,14 @@ from rest_framework.exceptions import ValidationError
 from .models import Conversation, Message, User
 
 class UserSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(read_only=True)
+
     class Meta:
         model = User
-        fields = ['user_id', 'first_name', 'last_name', 'email', 'phone_number', 'role', 'created_at']
+        fields = ['user_id', 'first_name', 'last_name', 'email', 'phone_number', 'role', 'created_at', 'full_name']
+
+    def get_full_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}"
 
 class MessageSerializer(serializers.ModelSerializer):
     sender = serializers.SerializerMethodField()
