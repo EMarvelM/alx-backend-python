@@ -6,7 +6,6 @@ import unittest
 from parameterized import parameterized, parameterized_class
 from unittest.mock import patch, PropertyMock, Mock
 from client import GithubOrgClient
-from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -43,8 +42,8 @@ class TestGithubOrgClient(unittest.TestCase):
         """Test GithubOrgClient.public_repos returns list of repo names."""
         test_url = "https://api.github.com/orgs/google/repos"
         mock_public_repos_url.return_value = test_url
-        mock_get_json.return_value = [{"name": "repo1"},
-                                       {"name": "repo2"}]
+        test_payload = [{"name": "repo1"}, {"name": "repo2"}]
+        mock_get_json.return_value = test_payload
         client = GithubOrgClient("google")
         result = client.public_repos()
         self.assertEqual(result, ["repo1", "repo2"])
@@ -60,10 +59,18 @@ class TestGithubOrgClient(unittest.TestCase):
         result = GithubOrgClient.has_license(repo, license_key)
         self.assertEqual(result, expected)
 
-
 @parameterized_class([
-    {"org_payload": org_payload, "repos_payload": repos_payload,
-     "expected_repos": expected_repos, "apache2_repos": apache2_repos},
+    {
+        "org_payload": {
+            'repos_url': 'https://api.github.com/orgs/google/repos'
+        },
+        "repos_payload": [
+            {"name": "episodes.dart", "license": {"key": "bsd-3-clause"}},
+            {"name": "cpp-netlib", "license": {"key": "bsl-1.0"}},
+        ],
+        "expected_repos": ["episodes.dart", "cpp-netlib"],
+        "apache2_repos": []
+    },
 ])
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """
