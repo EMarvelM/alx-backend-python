@@ -4,12 +4,13 @@ from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer
 from .permissions import IsParticipantOfConversation
 from .pagination import MessagePagination
-from .filters import MessageFilter
+from .filters import MessageFilter, ConversationFilter
 
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
     permission_classes = [IsAuthenticated, IsParticipantOfConversation]
+    filterset_class = ConversationFilter
 
     def get_queryset(self):
         return self.request.user.conversations.all()
