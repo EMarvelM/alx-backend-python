@@ -14,6 +14,7 @@ class GithubOrgClient:
     def __init__(self, org_name):
         self._org_name = org_name
 
+    @property
     @memoize
     def org(self):
         """
