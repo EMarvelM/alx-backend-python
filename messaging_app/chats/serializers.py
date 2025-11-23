@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+# serializers.ValidationError is used for validation errors
+
 from .models import Conversation, Message, User
 
 class UserSerializer(serializers.ModelSerializer):
