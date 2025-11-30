@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages as django_messages
 from django.http import JsonResponse
+from django.views.decorators.cache import cache_page
 from .models import Message, Notification, MessageHistory
 
 
@@ -25,13 +26,22 @@ def delete_user(request):
     return render(request, 'messaging/delete_user.html')
 
 
+@cache_page(60)
 @login_required
 def inbox(request):
     """
     Display unread messages for the logged-in user.
-    Uses the custom UnreadMessagesManager with .only() optimization.
+    Uses Message.objects.filter with .only() optimization.
+    Cached for 60 seconds.
     """
-    unread_messages = Message.unread.unread_for_user(request.user)
+    unread_messages = Message.objects.filter(
+        receiver=request.user,
+        read=False
+    ).select_related(
+        'sender', 'receiver'
+    ).only(
+        'id', 'sender', 'content', 'timestamp', 'parent_message'
+    )
     return render(request, 'messaging/inbox.html', {'messages': unread_messages})
 
 
