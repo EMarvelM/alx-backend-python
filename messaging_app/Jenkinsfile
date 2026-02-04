@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+
+    environment {
+        // App-specific environment variables
+        // Credentials IDs should be configured in Jenkins
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
+        IMAGE_NAME = "my-docker-hub-username/messaging-app" 
+        IMAGE_TAG = "latest"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout code from SCM (GitHub)
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                    pip install pytest pytest-django flake8 coverage
+                '''
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                // Determine if we need a database service here or if tests are mocked
+                // For simplicity in this template, running pytest
+                sh 'pytest --junitxml=test-results.xml'
+            }
+            post {
+                always {
+                    junit 'test-results.xml'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('', 'docker-hub-credentials') {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
