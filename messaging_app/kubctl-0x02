@@ -1,0 +1,8 @@
+#!/bin/bash
+# Apply deployments
+kubectl apply -f blue_deployment.yaml
+kubectl apply -f green_deployment.yaml
+kubectl apply -f kubeservice.yaml
+
+# Check logs of new version (Green)
+kubectl logs -l version=green

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Update deployment image (simulated by applying the already updated file if we modified it in place, 
+# or using set image command for rolling update on a standard deployment)
+
+# Assuming we use the standard deployment from Task 1 (not blue/green) for rolling update task:
+kubectl set image deployment/messaging-app messaging-app=messaging-app:2.0
+
+# Monitor rollout status
+kubectl rollout status deployment/messaging-app
+
+# Verify rollout with curl loop (check for downtime)
+# Using a timeout to not run forever
+timeout 30s bash -c 'while true; do curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/api/; echo ""; sleep 1; done'
+
+# Verify current pods
+kubectl get pods
