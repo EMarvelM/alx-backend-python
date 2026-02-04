@@ -1,0 +1,5 @@
+#!/bin/bash
+# Starts Minikube, verifies connection, and lists pods
+minikube start
+kubectl cluster-info
+kubectl get pods
